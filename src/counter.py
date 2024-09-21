@@ -20,6 +20,7 @@ def create_counter(name):
 
 @app.route('/counters/<name>', methods=['PUT'])
 def update_counter(name):
+    """Update a counter"""
     app.logger.info(f"Request to update counter: {name}")
     global COUNTERS
     if not name in COUNTERS:
