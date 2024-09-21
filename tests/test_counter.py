@@ -27,10 +27,12 @@ def client():
 class TestCounterEndPoints:
     """Test cases for Counter-related endpoints"""
 
+
     def test_create_a_counter(self, client):
         """It should create a counter"""
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
+
 
     def test_duplicate_a_counter(self, client):
         """It should return an error for duplicates"""
@@ -38,6 +40,7 @@ class TestCounterEndPoints:
         assert result.status_code == status.HTTP_201_CREATED
         result = client.post('/counters/bar')
         assert result.status_code == status.HTTP_409_CONFLICT
+
 
     def test_update_a_counter(self, client):
         """It should update a counter"""
@@ -51,9 +54,11 @@ class TestCounterEndPoints:
         assert result.status_code == status.HTTP_200_OK
         assert result.get_json()["swag"] == num.get_json()["swag"] + 1
 
+
     def test_update_a_counter_fail(self, client):
         result = client.put('/counters/swag3')
         assert result.status_code == status.HTTP_404_NOT_FOUND
+
 
     def test_read_a_counter(self, client):
         """It should read a counter"""
@@ -63,6 +68,21 @@ class TestCounterEndPoints:
         assert result.status_code == status.HTTP_200_OK
         assert result.get_json()["swag2"] == 0
 
+
     def test_read_a_counter_fail(self, client):
         result = client.get('/counters/swag4')
+        assert result.status_code == status.HTTP_404_NOT_FOUND
+
+
+    def test_delete_a_counter(self, client):
+        result = client.post('/counters/swag5')
+        assert result.status_code == status.HTTP_201_CREATED
+        result = client.delete('/counters/swag5')
+        assert result.status_code == status.HTTP_204_NO_CONTENT
+        result = client.get('/counters/swag5')
+        assert result.status_code == status.HTTP_404_NOT_FOUND
+
+
+    def test_delete_a_counter_fail(self, client):
+        result = client.delete('/counters/swag5')
         assert result.status_code == status.HTTP_404_NOT_FOUND
